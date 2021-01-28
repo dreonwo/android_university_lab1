@@ -1,9 +1,13 @@
 package com.codepath.bestsellerlistapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.icu.util.ULocale;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import org.json.JSONArray;
@@ -26,10 +30,13 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
 
     private final List<BestSellerBook> books;
     private final OnListFragmentInteractionListener mListener;
+    Context context;
 
-    public BestSellerBooksRecyclerViewAdapter(List<BestSellerBook> items, OnListFragmentInteractionListener listener) {
+    public BestSellerBooksRecyclerViewAdapter(List<BestSellerBook> items, OnListFragmentInteractionListener listener, Context context) {
         books = items;
         mListener = listener;
+        this.context = context;
+
     }
 
     @Override
@@ -40,7 +47,7 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
     }
 
     @Override
-    public void onBindViewHolder(final BookViewHolder holder, int position) {
+    public void onBindViewHolder(final BookViewHolder holder, final int position) {
         holder.mItem = books.get(position);
         holder.mBookTitle.setText(books.get(position).title);
         holder.mBookAuthor.setText(books.get(position).author);
@@ -63,6 +70,14 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
                 }
             }
         });
+
+        holder.mBuyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(books.get(position).amazonUrl));
+                    context.startActivity(browserIntent);
+            }
+        });
     }
 
     @Override
@@ -77,6 +92,7 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
         public final TextView mRanking;
         public final ImageView mBookImage;
         public final TextView mDescription;
+        public final Button mBuyButton;
 
 
         public BestSellerBook mItem;
@@ -89,6 +105,7 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
             mRanking = (TextView) view.findViewById(R.id.ranking);
             mBookImage = (ImageView) view.findViewById(R.id.book_image);
             mDescription = (TextView) view.findViewById(R.id.book_description);
+            mBuyButton = (Button) view.findViewById(R.id.buy_button);
         }
 
         @Override
